@@ -1,27 +1,40 @@
 import streamlit as st
 
-# Title of the app
-st.title('BMI Calculator')
+# Title and description
+st.title("BMI Calculator")
+st.write("Enter your height and weight to calculate your BMI.")
 
-# Input: User's height in centimeters
-height = st.number_input('Enter your height (cm)', min_value=0.0, value=170.0)
-
-# Input: User's weight in kilograms
-weight = st.number_input('Enter your weight (kg)', min_value=0.0, value=70.0)
+# Input fields for height and weight
+height = st.number_input("Height (cm)", min_value=0.0, format="%.2f")
+weight = st.number_input("Weight (kg)", min_value=0.0, format="%.2f")
 
 # Calculate BMI
 if height > 0 and weight > 0:
-    height_m = height / 100  # Convert height to meters
-    bmi = weight / (height_m ** 2)  # Calculate BMI
-    st.write(f'Your BMI is {bmi:.2f}')
-    # Display BMI category
+    bmi = weight / ((height / 100) ** 2)
+    st.write(f"Your BMI is: {bmi:.2f}")
+
+    # Categorize BMI
     if bmi < 18.5:
-        st.write("You are underweight.")
+        st.write("Category: Underweight")
     elif 18.5 <= bmi < 24.9:
-        st.write("You have a normal weight.")
+        st.write("Category: Normal weight")
     elif 25 <= bmi < 29.9:
-        st.write("You are overweight.")
+        st.write("Category: Overweight")
     else:
-        st.write("You are obese.")
+        st.write("Category: Obesity")
+
+    # Visualization
+    import matplotlib.pyplot as plt
+
+    categories = ["Underweight", "Normal weight", "Overweight", "Obesity"]
+    values = [18.5, 24.9, 29.9, bmi] if bmi > 29.9 else [bmi, 18.5, 24.9, 29.9]
+
+    fig, ax = plt.subplots()
+    ax.barh(categories, values, color=['blue', 'green', 'orange', 'red'])
+    ax.axvline(x=bmi, color='black', linestyle='--')
+    plt.xlabel('BMI Value')
+    plt.title('BMI Categories')
+
+    st.pyplot(fig)
 else:
-    st.write('Please enter valid height and weight')
+    st.write("Please enter valid height and weight.")
